@@ -60,7 +60,7 @@ const config = {
     ip: process.env.IP || undefined,
     port: process.env.PORT || 8080,
     mongo: {
-      uri: process.env.MONGODB_URI || 'mongodb://dbUser:password@ds129090.mlab.com:29090/heroku_q7k8cp6g'
+      uri: process.env.MONGODB_URI || 'mongodb://heroku_q7k8cp6g:s339cva051h74fr9jds8db61t9@ds129090.mlab.com:29090/heroku_q7k8cp6g'
     },
     client: {
       protocol: 'http',
