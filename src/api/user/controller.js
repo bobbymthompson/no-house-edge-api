@@ -1,9 +1,10 @@
 import _ from 'lodash'
 import { success, notFound } from '../../services/response/'
 import { User } from '.'
-//import stringify from 'node-stringify'
+import stringify from 'node-stringify'
 
 export const index = (req, res, next) => {
+  console.log('Index: %s', stringify(req))
   User.find(req.querymen.query, req.querymen.select, req.querymen.cursor)
     .then((users) => users.map((user) => user.view()))
     .then(success(res))
