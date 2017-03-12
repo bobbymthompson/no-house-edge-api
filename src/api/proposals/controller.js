@@ -107,16 +107,20 @@ export const create = (req, res, next) => {
 }
 
 export const index = ({
-    querymen: {
-      query,
-      select,
-      cursor
-    }
-  }, res, next) =>
+  querymen: {
+    query,
+    select,
+    cursor
+  }
+}, res, next) => {
+
+  console.log('Index: %s', stringify(query))
+
   Proposals.find(query, select, cursor)
-  .then((proposals) => proposals.map((proposal) => proposal.view()))
-  .then(success(res))
-  .catch(next)
+    .then((proposals) => proposals.map((proposal) => proposal.view()))
+    .then(success(res))
+    .catch(next)
+}
 
 export const show = ({
     params
