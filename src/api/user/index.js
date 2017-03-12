@@ -24,12 +24,14 @@ const {
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 401 Admin access only.
  */
-router.get('/',
-  middleware(new QueryMenSchema({
-    email: {
-      type: [String]
-    }
-  })), index)
+router.get('/', index)
+
+// router.get('/',
+//   middleware(new QueryMenSchema({
+//     email: {
+//       type: [String]
+//     }
+//   })), index)
 
 /**
  * @api {get} /users/me Retrieve current user
