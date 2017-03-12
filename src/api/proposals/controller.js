@@ -114,8 +114,6 @@ export const index = ({
   }
 }, res, next) => {
 
-  console.log('Index: %s', stringify(query))
-
   Proposals.find(query, select, cursor)
     .then((proposals) => proposals.map((proposal) => proposal.view()))
     .then(success(res))
