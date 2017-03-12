@@ -1,22 +1,17 @@
 import _ from 'lodash'
 import { success, notFound } from '../../services/response/'
 import { User } from '.'
+//import stringify from 'node-stringify'
 
-export const index = ({ querymen: { query, select, cursor } }, res, next) =>
-  User.find(query, select, cursor)
+export const index = (req, res, next) => {
+  User.find(req.querymen.query, req.querymen.select, req.querymen.cursor)
     .then((users) => users.map((user) => user.view()))
     .then(success(res))
     .catch(next)
+}
 
 export const show = ({ params }, res, next) =>
   User.findById(params.id)
-    .then(notFound(res))
-    .then((user) => user ? user.view() : null)
-    .then(success(res))
-    .catch(next)
-
-export const showByName = ({params}, res, next) =>
-  User.findOne({'email': params.email})
     .then(notFound(res))
     .then((user) => user ? user.view() : null)
     .then(success(res))

@@ -54,10 +54,6 @@ userSchema.path('email').set(function (email) {
   return email
 })
 
-// userSchema.pre('save', function (next) {
-  
-// })
-
 userSchema.methods = {
   view (full) {
     let view = {}

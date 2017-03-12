@@ -1,12 +1,17 @@
 import { Router } from 'express'
-import { middleware as query } from 'querymen'
+import { middleware, Schema as QueryMenSchema } from 'querymen'
 import { middleware as body } from 'bodymen'
-import { index, showMe, show, showByName, create, update, destroy } from './controller'
+import { index, showMe, show, create, update, destroy } from './controller'
 import { schema } from './model'
 export User, { schema } from './model'
 
 const router = new Router()
-const { email, name, picture, role } = schema.tree
+const {
+  email,
+  name,
+  picture,
+  role
+} = schema.tree
 
 /**
  * @api {get} /users Retrieve users
@@ -20,8 +25,11 @@ const { email, name, picture, role } = schema.tree
  * @apiError 401 Admin access only.
  */
 router.get('/',
-  query(),
-  index)
+  middleware(new QueryMenSchema({
+    email: {
+      type: [String]
+    }
+  })), index)
 
 /**
  * @api {get} /users/me Retrieve current user
@@ -46,17 +54,6 @@ router.get('/:id',
   show)
 
 /**
- * @api {get} /users/:email Retrieve user
- * @apiName RetrieveUser
- * @apiGroup User
- * @apiPermission public
- * @apiSuccess {Object} user User's data.
- * @apiError 404 User not found.
- */
-router.get('/:email',
-  showByName)
-
-/**
  * @api {post} /users Create user
  * @apiName CreateUser
  * @apiGroup User
@@ -72,7 +69,12 @@ router.get('/:email',
  * @apiError 409 Email already registered.
  */
 router.post('/',
-  body({ email, name, picture, role }),
+  body({
+    email,
+    name,
+    picture,
+    role
+  }),
   create)
 
 /**
@@ -89,7 +91,10 @@ router.post('/',
  * @apiError 404 User not found.
  */
 router.put('/:id',
-  body({ name, picture }),
+  body({
+    name,
+    picture
+  }),
   update)
 
 /**
