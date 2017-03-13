@@ -15,6 +15,8 @@ import stringify from 'node-stringify'
 import {
   User
 } from '../user/.'
+var Bitly = require('bitly')
+var bitly = new Bitly('54912c896dbb8ee3f9bbc529f10010b30114cb62')
 
 // create reusable transporter object using the default SMTP transport
 var transporter = nodemailer.createTransport({
@@ -61,40 +63,48 @@ export const create = (req, res, next) => {
             port: client.port
           })
 
-          path = path + '/#/proposal/' + proposal.id
+          path = path + '/#/proposal/' + proposal.id + '/'
           console.log('Path for accepting proposal: %s', path)
 
-          let body = proposedBy.name + ` is looking for action on: ${pick} ${line} (${away} @ ${home} ${time}) ${path}`
+          bitly.shorten(path).then(function (response) {
+            var shortUrl = response.data.url
+            console.log('Short URL: %s', stringify(response))
 
-          let proposedToEmail = proposedTo.sms()
-          if (!proposedToEmail) {
-            console.log('No email provided')
-          } else {
+            let body = proposedBy.name + ` is looking for action on: ${pick} ${line} (${away} @ ${home} ${time}) ${shortUrl}`
 
-            console.log(`Sending email to ${proposedToEmail} - ${body}`)
+            let proposedToEmail = proposedTo.sms()
+            if (!proposedToEmail) {
+              console.log('No email provided')
+            } else {
 
-            let mailOptions = {
-              from: '"No House Edge" <noreply.no.house.edge@gmail.com>',
-              to: proposedToEmail,
-              text: body
-            }
+              console.log(`Sending email to ${proposedToEmail} - ${body}`)
 
-            // send mail with defined transport object
-            transporter.sendMail(mailOptions, (error, info) => {
-              if (error) {
-                return console.log(error)
+              let mailOptions = {
+                from: '"No House Edge" <noreply.no.house.edge@gmail.com>',
+                to: proposedToEmail,
+                text: body
               }
-              console.log('Message %s sent: %s', info.messageId, info.response)
-            })
-          }
 
-          // get and return all the proposals after you create another
-          Proposals.find(function (err, proposals) {
-            if (err) {
-              res.send(err)
+              // send mail with defined transport object
+              transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                  return console.log(error)
+                }
+                console.log('Message %s sent: %s', info.messageId, info.response)
+              })
             }
 
-            res.json(proposals)
+            // get and return all the proposals after you create another
+            Proposals.find(function (err, proposals) {
+              if (err) {
+                res.send(err)
+              }
+
+              res.json(proposals)
+            })
+
+          }, function (error) {
+            throw error
           })
         })
       })
